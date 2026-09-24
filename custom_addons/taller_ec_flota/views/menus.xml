@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Renombrar el módulo Flota a "Vehículos" -->
+    <record id="fleet.menu_root" model="ir.ui.menu">
+        <field name="name">Vehículos</field>
+    </record>
+
+    <!-- Ocultar Tablero, Conversaciones y Apps a quien no tenga el grupo completo -->
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_taller_full_menus')])]"/>
+    </record>
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_taller_full_menus')])]"/>
+    </record>
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('group_taller_full_menus')])]"/>
+    </record>
+</odoo>

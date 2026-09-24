@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Botón de historial de órdenes en la ficha del vehículo -->
+    <record id="fleet_vehicle_view_form_repair" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.repair</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_repair_orders" type="object"
+                        class="oe_stat_button" icon="fa-wrench">
+                    <field name="repair_order_count" widget="statinfo"
+                           string="Reparaciones"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

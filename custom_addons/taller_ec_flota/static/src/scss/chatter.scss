@@ -1,0 +1,8 @@
+// La fila de botones del chatter (Enviar mensaje, Registrar una nota,
+// Actividades, íconos, Seguir) no cabe en el panel lateral de MuK y Odoo
+// le pone overflow-x-auto, lo que muestra una barra horizontal y esconde
+// "Seguir". Se deja que los botones pasen a una segunda línea.
+.o-mail-Chatter-topbar {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+}

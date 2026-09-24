@@ -1,0 +1,15 @@
+# Clones de referencia (no forman parte de BLER ERP)
+/odoo/
+/carcare/
+/repairos/
+/workdisplay.png
+
+# Respaldos de base de datos: contienen datos de clientes
+/odoo_stack/backups/
+
+# Configuración local de Claude Code
+/.claude/settings.local.json
+
+# Python
+__pycache__/
+*.py[cod]

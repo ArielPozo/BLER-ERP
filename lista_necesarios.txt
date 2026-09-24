@@ -1,0 +1,16 @@
+A continuacion se listan los aspectos que se consideran necesarios de cada repositorio
+CarCare:
+    -ordenes de trabajo en pdf
+    -crear clientes y tambien vehiculos asociados al cliente
+    -interfaz sencilla
+
+RepairOs:
+    -agregar servicios y partes como separados al inventario
+    -agendar trabajos
+    -dashboard
+
+Consideraciones adicionales:
+    -separacion entre orden de trabajo y factura
+    -accesos al historial de cada vehiculo (ficha con resumen)
+    -investigar formas  de accesibilidad para clientes (app movil para clientes o alternativa que permita al cliente ver historial y proximos mantenimientos)
+    -app para taller (opcional)

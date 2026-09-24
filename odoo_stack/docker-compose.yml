@@ -1,0 +1,36 @@
+# Odoo 18 (Community) + Postgres + módulos SRI de Somatech
+# Levantar:  docker compose -f odoo_stack/docker-compose.yml up -d --build
+# Interfaz:  http://localhost:8069   (crear BD; master password: admin)
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - odoo_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 5s
+      retries: 10
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../odoo_ec_addons:/mnt/extra-addons:ro
+      - ../custom_addons:/mnt/custom-addons:ro
+    command: odoo -c /etc/odoo/odoo.conf
+
+volumes:
+  odoo_db:
+  odoo_data:
