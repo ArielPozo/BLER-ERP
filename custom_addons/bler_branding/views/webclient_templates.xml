@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Título por defecto y favicon de todas las páginas que usan web.layout
+         (cliente web, login, portal). El JS del cliente web cambia luego el
+         título según la acción; ver static/src/js/title_service_patch.js. -->
+    <template id="layout" inherit_id="web.layout" name="BLER ERP: título y favicon">
+        <xpath expr="//head/title" position="attributes">
+            <attribute name="t-esc">title or 'BLER ERP'</attribute>
+        </xpath>
+        <xpath expr="//head/link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-href">x_icon or '/bler_branding/static/src/img/favicon_placeholder.ico'</attribute>
+        </xpath>
+    </template>
+
+    <!-- Ícono al agregar el cliente web a la pantalla de inicio en iOS -->
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap" name="BLER ERP: ícono iOS">
+        <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
+            <attribute name="href">/bler_branding/static/src/img/bler_icon_placeholder_ios.png</attribute>
+        </xpath>
+    </template>
+
+    <!-- Login: reemplazar "Powered by Odoo" por el nombre del producto (sin enlace) -->
+    <template id="login_layout" inherit_id="web.login_layout" name="BLER ERP: pie del login">
+        <xpath expr="//a[contains(@href, 'utm_medium=auth')]" position="replace">
+            <span class="text-muted">BLER ERP</span>
+        </xpath>
+    </template>
+
+    <!-- Pie de las páginas públicas (portal): quitar "Powered by Odoo" -->
+    <template id="brand_promotion" inherit_id="web.brand_promotion" name="BLER ERP: sin promoción de marca">
+        <xpath expr="//t[@t-call='web.brand_promotion_message']" position="replace"/>
+    </template>
+
+</odoo>

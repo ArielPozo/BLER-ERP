@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Taller EC - Flota en Órdenes de Reparación",
-    "version": "18.0.1.0.0",
+    "name": "BLER ERP - Flota en Órdenes de Reparación",
+    "version": "18.0.1.0.1",
     "category": "Inventory/Repair",
     "summary": "Liga el vehículo (fleet) a la orden de reparación y muestra el historial por vehículo",
     "description": """
@@ -12,7 +12,7 @@ Módulo puente para talleres mecánicos:
 * Muestra el historial de órdenes de reparación en la ficha del vehículo
   (botón con contador), para consultar el historial por placa.
     """,
-    "author": "Taller EC",
+    "author": "BLER ERP",
     "license": "LGPL-3",
     "depends": ["repair", "fleet", "mail", "spreadsheet_dashboard"],
     "data": [

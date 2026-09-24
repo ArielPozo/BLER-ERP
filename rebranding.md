@@ -9,15 +9,16 @@ La licencia de Odoo 18 Community es la **LGPL-3**, no la GPL-3.0. Lo declara `od
 | Componente | Origen | Licencia |
 |---|---|---|
 | Núcleo de Odoo 18 Community (imagen Docker `odoo:18`) | Odoo S.A. | LGPL-3 |
-| `custom_addons/taller_ec_flota` | Propio | LGPL-3 |
+| `custom_addons/bler_branding`, `custom_addons/taller_ec_flota` | Propio | LGPL-3 |
 | `custom_addons/muk_web_*` | MuK IT (`muk-it/odoo-modules`) | LGPL-3 |
-| `custom_addons/web_dark_mode`, `web_responsive` | OCA (`OCA/web`) | **AGPL-3** |
+| `custom_addons/web_dark_mode` | OCA (`OCA/web`) | **AGPL-3** |
+| `custom_addons/web_responsive` | OCA (`OCA/web`) | LGPL-3 (según su `__manifest__.py`) |
 | `odoo_ec_addons/l10n_ec_*` | Somatech (`somatechlat/odoo_saas_ecuador`) | LGPL-3 |
 
 Si el repositorio se publica bajo GPL-3.0, las dos licencias son compatibles:
 
 - El código LGPL-3 (lo propio, MuK y Somatech) se puede redistribuir bajo GPL-3.0; la sección 2 de la LGPL-3 lo permite.
-- Los módulos AGPL-3 de OCA **no** se pueden relicenciar a GPL-3.0, pero sí pueden convivir en el mismo repositorio conservando su licencia (sección 13 de la GPL-3.0).
+- El módulo AGPL-3 de OCA (`web_dark_mode`) **no** se pueden relicenciar a GPL-3.0, pero sí pueden convivir en el mismo repositorio conservando su licencia (sección 13 de la GPL-3.0).
 
 Por eso cada módulo mantiene su propio `license` en el manifest. Si se añade un `LICENSE` en la raíz, debe aclarar que rige solo para lo que no tenga una licencia propia.
 
@@ -39,7 +40,7 @@ Por eso cada módulo mantiene su propio `license` en el manifest. Si se añade u
 - **La marca "Odoo".** Es una marca registrada de Odoo S.A. y las licencias de software no dan derechos sobre marcas; la GPL-3/LGPL-3 lo deja explícito en la sección 7(e). No usar "Odoo" ni su logo en el nombre del producto, el logo, el dominio ni la publicidad. Lo mismo aplica a la marca "OCA".
 - **Código fuente de lo modificado.**
   - Si se distribuye una versión modificada de algo LGPL-3 (por ejemplo, un parche al núcleo), hay que ofrecer el código fuente de esa modificación bajo LGPL-3.
-  - Los módulos AGPL-3 (`web_dark_mode`, `web_responsive`) tienen una obligación adicional: si se modifican y BLER ERP se ofrece como servicio por red, hay que dar a los usuarios acceso al código fuente modificado. Sin modificaciones, basta con conservar la licencia.
+  - El módulo AGPL-3 (`web_dark_mode`) tiene una obligación adicional: si se modifica y BLER ERP se ofrece como servicio por red, hay que dar a los usuarios acceso al código fuente modificado. Sin modificaciones, basta con conservar la licencia.
 - **Nada de Odoo Enterprise.** Los módulos Enterprise tienen licencia propietaria (OEEL) y no pueden incluirse ni imitarse copiando su código.
 
 ## Cambio de nombres técnicos
@@ -56,8 +57,10 @@ Hay dos caminos:
 
 ## Pendiente
 
-- [ ] Decidir la licencia de la raíz del repositorio (GPL-3.0 o LGPL-3) y añadir `LICENSE` con la aclaración de licencias por módulo.
-- [ ] Crear el módulo `bler_branding` (título, favicon, logo, login, menú de usuario).
-- [ ] Cambiar `author` a "BLER ERP" solo en módulos propios (`taller_ec_flota`).
-- [ ] Revisar textos que digan "Taller EC" en vistas y menús.
-- [ ] Añadir un `README.md` que diga "BLER ERP, basado en Odoo 18 Community", con créditos a MuK IT, OCA y Somatech.
+- [x] Licencia de la raíz del repositorio: **resuelto sin `LICENSE` en la raíz**. Por decisión del propietario, cada componente conserva exactamente la licencia de su proyecto y módulo de origen (campo `license` de cada `__manifest__.py`, archivos `LICENSE`/`COPYRIGHT` y cabeceras). No se cambia la licencia ni el `author` de módulos de terceros. El `README.md` resume las licencias por componente.
+- [x] Crear el módulo `bler_branding` (título de la pestaña, favicon e íconos PWA, pie del login y del portal, menú de usuario). El logo y los íconos son provisionales: reemplazar los archivos de `bler_branding/static/src/img/` y `static/description/icon.png` conservando los nombres.
+- [x] Cambiar `author` a "BLER ERP" solo en módulos propios (`taller_ec_flota`, `bler_branding`).
+- [x] Revisar textos que digan "Taller EC" en vistas y menús (`taller_ec_flota`: nombre del módulo y del grupo "BLER ERP: menús completos"). El nombre técnico `taller_ec_flota` se mantiene.
+- [x] Añadir un `README.md` que diga "BLER ERP, basado en Odoo 18 Community", con créditos a Odoo S.A., MuK IT, OCA y Somatech.
+- [ ] Subir el logo oficial de BLER ERP como logo de la compañía (Ajustes → Compañías) y en Ajustes → Marca de MuK (reemplaza "Your logo" de la barra lateral). Mientras tanto se puede usar `bler_branding/static/src/img/bler_logo_placeholder.png`.
+- [ ] Textos con "Odoo" que `bler_branding` todavía no cambia: títulos de los diálogos de error ("Odoo Error", "Odoo Session Expired"…), título por defecto de `Dialog` y el "Powered by Odoo" de las plantillas de correo (`mail`, `auth_signup`, `portal`).

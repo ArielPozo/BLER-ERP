@@ -10,6 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 |---|---|---|
 | `odoo_stack/` | Docker Compose stack (Odoo 18 + Postgres 16), `odoo.conf`, DB backups | Yes |
 | `custom_addons/taller_ec_flota/` | Our module: links `fleet.vehicle` to `repair.order`, menu restrictions | Yes |
+| `custom_addons/bler_branding/` | Our module: BLER ERP brand in the UI (tab title, favicon/PWA icons, login and portal footer, user menu without odoo.com links). Logo/icons in `static/src/img/` are placeholders | Yes |
 | `custom_addons/muk_web_*`, `web_dark_mode`, `web_responsive` | Third-party UI addons vendored from `muk-it/odoo-modules` and `OCA/web` (branch 18.0). Don't edit; re-copy from upstream to update | No |
 | `odoo_ec_addons/` | Vendored copy of `somatechlat/odoo_saas_ecuador` (commit in `VENDORED.md`): Ecuador SRI localization (`l10n_ec_*`) | No (vendored) |
 | `odoo/` | Clone of Odoo 18.0 source, for reading core code only. The container uses the `odoo:18` image, not this. Git-ignored | No |
@@ -54,10 +55,11 @@ Addon folders are mounted read-only into the container (`../odoo_ec_addons` → 
 - **addons_path order matters** (`odoo_stack/config/odoo.conf`): core addons come first, so core `l10n_ec` shadows Somatech's `odoo_ec_addons/l10n_ec`. Somatech's other modules have unique names (`l10n_ec_base`, `l10n_ec_edi` are installed). Don't reorder the path without checking for name collisions.
 - **Localization tests live inside each module** (`l10n_ec_base/tests`, `l10n_ec_sri/tests`, …). The upstream repo also shipped a root-level `odoo_ec_addons/tests/`. We deleted it because it was outside any module (never discovered), mostly tautological, and its real tests failed on invalid sample RUC/cédula numbers. Keep it deleted when re-vendoring from upstream.
 - **Backend UI comes from third-party addons only.** `muk_web_theme` (with `muk_web_appsbar`/`colors`/`chatter`/`dialog`) supplies the sidebar and brand colors (Settings → General → Branding). `web_dark_mode` adds a per-user "Dark Mode" toggle in the user menu. `web_responsive` is vendored but **uninstalled**, because it conflicts with MuK's app menu. `taller_ec_flota` ships only small fixes in `static/src/scss/` (currently `chatter.scss`, which wraps the chatter topbar buttons instead of showing a horizontal scrollbar in MuK's side chatter). Don't add CSS that restyles `.o_main_navbar`, because it fights MuK's appsbar.
+- **Branding lives only in `bler_branding`.** It inherits `web.layout`, `web.webclient_bootstrap`, `web.login_layout`, `web.brand_promotion`, `portal.portal_record_sidebar` and `mail.discuss_public_channel_template`, patches `titleService` (default title) and removes the `documentation`, `support` and `odoo_account` entries from the `user_menuitems` registry. `muk_web_theme` overrides the favicon with `res.company.favicon`, so `bler_branding`'s post-init hook swaps that field only while it still holds Odoo's default favicon. Don't rename OdooBot or edit other modules' data records.
 - **Menu visibility for the mechanic user.** `taller_ec_flota/security/taller_security.xml` defines `group_taller_full_menus` (admin/root only). `views/menus.xml` restricts Dashboard, Discuss and Apps to that group and renames Fleet to "Vehículos". The `mecanica` user lacks the group on purpose.
 - **Vehicle ↔ repair link.** `repair.order.vehicle_id` onchange pre-fills `partner_id` from `fleet.vehicle.driver_id`. The vehicle form gets a counter button (`action_view_repair_orders`) for per-plate history.
 
 ## Conventions
 
 - UI strings, comments and docs are in Spanish; the DB language is `es_419`.
-- Our modules use version `18.0.x.y.z`, license LGPL-3, author "Taller EC".
+- Our modules use version `18.0.x.y.z`, license LGPL-3, author "BLER ERP". Third-party modules keep their own `license` and `author`; there is no root `LICENSE` on purpose (see `rebranding.md`).
