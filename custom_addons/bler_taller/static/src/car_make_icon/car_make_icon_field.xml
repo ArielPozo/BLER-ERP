@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bler_taller.CarMakeIconField">
+        <i t-if="iconClass" t-attf-class="o_car_make {{ iconClass }} fs-4 align-middle" role="img"/>
+        <img t-elif="logoUrl" t-att-src="logoUrl" class="o_car_make_logo align-middle" alt=""/>
+    </t>
+</templates>

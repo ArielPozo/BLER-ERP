@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_repair_service_line_user,repair.service.line usuario,model_repair_service_line,stock.group_stock_user,1,1,1,1
+access_fleet_vehicle_repair_user,fleet.vehicle usuario de reparaciones,fleet.model_fleet_vehicle,stock.group_stock_user,1,1,1,0
+access_fleet_vehicle_odometer_repair_user,fleet.vehicle.odometer usuario de reparaciones,fleet.model_fleet_vehicle_odometer,stock.group_stock_user,1,1,1,0
+access_fleet_vehicle_model_repair_user,fleet.vehicle.model usuario de reparaciones,fleet.model_fleet_vehicle_model,stock.group_stock_user,1,1,1,0
+access_fleet_vehicle_model_brand_repair_user,fleet.vehicle.model.brand usuario de reparaciones,fleet.model_fleet_vehicle_model_brand,stock.group_stock_user,1,1,1,0
+access_fleet_vehicle_model_category_repair_user,fleet.vehicle.model.category usuario de reparaciones,fleet.model_fleet_vehicle_model_category,stock.group_stock_user,1,0,0,0
+access_fleet_vehicle_state_repair_user,fleet.vehicle.state usuario de reparaciones,fleet.model_fleet_vehicle_state,stock.group_stock_user,1,0,0,0
+access_fleet_vehicle_tag_repair_user,fleet.vehicle.tag usuario de reparaciones,fleet.model_fleet_vehicle_tag,stock.group_stock_user,1,0,0,0
+access_product_template_taller_catalog,product.template catálogo del taller,product.model_product_template,group_taller_catalog,1,1,1,0
+access_product_product_taller_catalog,product.product catálogo del taller,product.model_product_product,group_taller_catalog,1,1,1,0

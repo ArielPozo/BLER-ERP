@@ -1,0 +1,99 @@
+/* car-makes-icons 1.0.0 (MIT, Dan G Nelson) - https://github.com/dangnelson/car-makes-icons
+ * Copia recortada: solo woff2/woff/ttf, y la fuente se aplica con la clase
+ * .o_car_make (el original usaba [class^="car-"], demasiado amplio). */
+@font-face {
+  font-family: 'car-makes-icons';
+  src: url('fonts/car-makes-icons.woff2') format('woff2'),
+       url('fonts/car-makes-icons.woff') format('woff'),
+       url('fonts/car-makes-icons.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+.o_car_make {
+  font-family: 'car-makes-icons' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.o_car_make.car-acura:before { content: "\e91b"; }
+.o_car_make.car-alfa-romeo:before { content: "\e904"; }
+.o_car_make.car-alfa-romeo-alt:before { content: "\e91c"; }
+.o_car_make.car-am-general:before { content: "\e91d"; }
+.o_car_make.car-aston-martin:before { content: "\e916"; }
+.o_car_make.car-aston-martin-alt:before { content: "\e917"; }
+.o_car_make.car-audi:before { content: "\e91e"; }
+.o_car_make.car-bentley:before { content: "\e91f"; }
+.o_car_make.car-bmw:before { content: "\e920"; }
+.o_car_make.car-bugatti:before { content: "\e921"; }
+.o_car_make.car-buick:before { content: "\e922"; }
+.o_car_make.car-cadillac:before { content: "\e923"; }
+.o_car_make.car-chevrolet:before { content: "\e924"; }
+.o_car_make.car-chrysler:before { content: "\e925"; }
+.o_car_make.car-daewoo:before { content: "\e926"; }
+.o_car_make.car-dodge:before { content: "\e905"; }
+.o_car_make.car-eagle:before { content: "\e927"; }
+.o_car_make.car-ferrari:before { content: "\e928"; }
+.o_car_make.car-fiat:before { content: "\e901"; }
+.o_car_make.car-fiat-alt:before { content: "\e929"; }
+.o_car_make.car-fisker:before { content: "\e92a"; }
+.o_car_make.car-ford:before { content: "\e92b"; }
+.o_car_make.car-genesis:before { content: "\e92c"; }
+.o_car_make.car-geo:before { content: "\e92d"; }
+.o_car_make.car-gmc:before { content: "\e92e"; }
+.o_car_make.car-honda:before { content: "\e92f"; }
+.o_car_make.car-hummer:before { content: "\e930"; }
+.o_car_make.car-hyundai:before { content: "\e931"; }
+.o_car_make.car-infiniti:before { content: "\e932"; }
+.o_car_make.car-isuzu:before { content: "\e933"; }
+.o_car_make.car-jaguar:before { content: "\e914"; }
+.o_car_make.car-jaguar-alt:before { content: "\e915"; }
+.o_car_make.car-jeep:before { content: "\e913"; }
+.o_car_make.car-jeep-alt:before { content: "\e912"; }
+.o_car_make.car-kia:before { content: "\e934"; }
+.o_car_make.car-lamborghini:before { content: "\e910"; }
+.o_car_make.car-lamborghini-alt:before { content: "\e911"; }
+.o_car_make.car-land-rover:before { content: "\e935"; }
+.o_car_make.car-lexus:before { content: "\e936"; }
+.o_car_make.car-lincoln:before { content: "\e937"; }
+.o_car_make.car-lotus:before { content: "\e90e"; }
+.o_car_make.car-lotus-alt:before { content: "\e90f"; }
+.o_car_make.car-maserati:before { content: "\e938"; }
+.o_car_make.car-maybach:before { content: "\e939"; }
+.o_car_make.car-mazda:before { content: "\e90d"; }
+.o_car_make.car-mazda-alt:before { content: "\e93a"; }
+.o_car_make.car-mclaren:before { content: "\e902"; }
+.o_car_make.car-mclaren-alt:before { content: "\e903"; }
+.o_car_make.car-mercedes-benz:before { content: "\e918"; }
+.o_car_make.car-mercedes-benz-alt:before { content: "\e93b"; }
+.o_car_make.car-mercury:before { content: "\e93c"; }
+.o_car_make.car-mini:before { content: "\e900"; }
+.o_car_make.car-mini-alt:before { content: "\e93d"; }
+.o_car_make.car-mitsubishi:before { content: "\e93e"; }
+.o_car_make.car-nissan:before { content: "\e93f"; }
+.o_car_make.car-oldsmobile:before { content: "\e940"; }
+.o_car_make.car-panoz:before { content: "\e941"; }
+.o_car_make.car-plymouth:before { content: "\e942"; }
+.o_car_make.car-pontiac:before { content: "\e943"; }
+.o_car_make.car-porsche:before { content: "\e944"; }
+.o_car_make.car-ram:before { content: "\e906"; }
+.o_car_make.car-ram-alt:before { content: "\e909"; }
+.o_car_make.car-rolls-royce:before { content: "\e945"; }
+.o_car_make.car-saab:before { content: "\e919"; }
+.o_car_make.car-saab-alt:before { content: "\e91a"; }
+.o_car_make.car-saturn:before { content: "\e946"; }
+.o_car_make.car-scion:before { content: "\e947"; }
+.o_car_make.car-smart:before { content: "\e948"; }
+.o_car_make.car-spyker:before { content: "\e90b"; }
+.o_car_make.car-spyker-alt:before { content: "\e90c"; }
+.o_car_make.car-subaru:before { content: "\e907"; }
+.o_car_make.car-subaru-alt:before { content: "\e908"; }
+.o_car_make.car-suzuki:before { content: "\e949"; }
+.o_car_make.car-tesla:before { content: "\e94a"; }
+.o_car_make.car-toyota:before { content: "\e94b"; }
+.o_car_make.car-volkswagen:before { content: "\e94c"; }
+.o_car_make.car-volvo:before { content: "\e90a"; }
+.o_car_make.car-volvo-alt:before { content: "\e94d"; }

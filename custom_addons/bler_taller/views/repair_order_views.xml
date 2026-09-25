@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Formulario de la orden de trabajo -->
+    <record id="view_repair_order_form_taller" model="ir.ui.view">
+        <field name="name">repair.order.form.taller</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Botones: factura (documento aparte) e impresión de la OT -->
+            <button name="action_create_sale_order" position="after">
+                <button name="action_taller_invoice" type="object" string="Facturar"
+                        class="btn-secondary" groups="sales_team.group_sale_salesman"
+                        invisible="state != 'done' or invoice_status == 'invoiced'"/>
+                <button name="%(bler_taller.action_report_work_order)d" type="action"
+                        string="Imprimir OT" icon="fa-print"/>
+            </button>
+            <div name="button_box" position="inside">
+                <button name="action_view_invoices" type="object" class="oe_stat_button"
+                        icon="fa-file-text-o" invisible="not invoice_count">
+                    <field name="invoice_count" widget="statinfo" string="Facturas"/>
+                </button>
+            </div>
+
+            <!-- Interfaz sencilla: el "producto a reparar" y la devolución no se
+                 usan en el taller (el objeto es el vehículo); quedan solo en
+                 modo desarrollador. -->
+            <field name="product_id" position="attributes">
+                <attribute name="groups">base.group_no_one</attribute>
+            </field>
+            <field name="picking_id" position="attributes">
+                <attribute name="groups">base.group_no_one</attribute>
+            </field>
+
+            <!-- Vehículo: solo los del cliente elegido; al crear uno nuevo queda
+                 asociado al cliente. -->
+            <field name="vehicle_id" position="attributes">
+                <attribute name="domain">partner_id and [('driver_id', 'child_of', partner_id)] or []</attribute>
+                <attribute name="context">{'default_driver_id': partner_id}</attribute>
+                <attribute name="readonly">state in ('done', 'cancel')</attribute>
+            </field>
+            <field name="vehicle_id" position="after">
+                <label for="odometer" invisible="not vehicle_id"/>
+                <div class="o_row" invisible="not vehicle_id">
+                    <field name="odometer" readonly="state in ('done', 'cancel')"/>
+                    <field name="odometer_unit"/>
+                </div>
+            </field>
+            <field name="repair_request" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="string">Trabajo solicitado</attribute>
+                <attribute name="placeholder">Lo que el cliente reporta o pide (ruido al frenar, mantenimiento de 10.000 km...)</attribute>
+            </field>
+            <field name="schedule_date" position="after">
+                <field name="taller_duration" widget="float_time" readonly="state in ('done', 'cancel')"/>
+            </field>
+            <field name="user_id" position="attributes">
+                <attribute name="string">Mecánico</attribute>
+            </field>
+
+            <!-- Servicios (mano de obra) separados de los repuestos (inventario) -->
+            <page name="parts" position="before">
+                <page string="Servicios" name="services">
+                    <field name="service_line_ids" readonly="state in ('done', 'cancel')">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" context="{'default_type': 'service'}"/>
+                            <field name="name" optional="show"/>
+                            <field name="duration" widget="float_time" optional="show"/>
+                            <field name="quantity"/>
+                            <field name="price_unit"/>
+                            <field name="discount" optional="hide"/>
+                            <field name="price_subtotal"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+            <page name="parts" position="attributes">
+                <attribute name="string">Repuestos</attribute>
+            </page>
+            <page name="repair_notes" position="before">
+                <page string="Próximo mantenimiento" name="next_service">
+                    <group>
+                        <group>
+                            <field name="next_service_date"/>
+                            <field name="next_service_km"/>
+                        </group>
+                        <div class="text-muted">
+                            Al terminar la orden, el kilometraje de ingreso y el
+                            próximo mantenimiento se guardan en la ficha del
+                            vehículo. El cliente los ve en el portal y recibe un
+                            recordatorio por correo unos días antes.
+                        </div>
+                    </group>
+                </page>
+            </page>
+            <notebook position="after">
+                <group class="oe_subtotal_footer" name="taller_totals">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="amount_services"/>
+                    <field name="amount_parts"/>
+                    <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                    <field name="invoice_status" invisible="not sale_order_id"/>
+                </group>
+                <div class="clearfix"/>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Lista -->
+    <record id="view_repair_order_tree_taller" model="ir.ui.view">
+        <field name="name">repair.order.list.taller</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="vehicle_id" position="before">
+                <field name="vehicle_brand_logo" column_invisible="1"/>
+                <field name="vehicle_brand_icon" widget="car_make_icon" options="{'logo_field': 'vehicle_brand_logo'}" nolabel="1" width="40px" optional="show"/>
+            </field>
+            <field name="state" position="before">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="amount_total" sum="Total" optional="show"/>
+                <field name="invoice_status" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Búsqueda -->
+    <record id="view_repair_order_search_taller" model="ir.ui.view">
+        <field name="name">repair.order.search.taller</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form_filter"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="before">
+                <field name="vehicle_id" filter_domain="['|', ('vehicle_id.license_plate', 'ilike', self), ('vehicle_id.name', 'ilike', self)]"/>
+                <field name="partner_id"/>
+                <field name="user_id" string="Mecánico"/>
+            </field>
+            <filter name="filter_cancel" position="after">
+                <separator/>
+                <filter string="Terminadas sin facturar" name="filter_to_invoice"
+                        domain="[('state', '=', 'done'), ('invoice_status', '!=', 'invoiced')]"/>
+                <filter string="Facturadas" name="filter_invoiced"
+                        domain="[('invoice_status', '=', 'invoiced')]"/>
+                <separator/>
+                <filter string="Mis trabajos" name="filter_mine" domain="[('user_id', '=', uid)]"/>
+            </filter>
+            <filter name="partner" position="after">
+                <filter string="Vehículo" name="group_vehicle" context="{'group_by': 'vehicle_id'}"/>
+                <filter string="Mecánico" name="group_user" context="{'group_by': 'user_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Kanban: placa del vehículo en la tarjeta -->
+    <record id="view_repair_kanban_taller" model="ir.ui.view">
+        <field name="name">repair.order.kanban.taller</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_kanban"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="vehicle_id" class="d-block text-muted"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Agenda de trabajos -->
+    <record id="view_repair_order_calendar" model="ir.ui.view">
+        <field name="name">repair.order.calendar</field>
+        <field name="model">repair.order</field>
+        <field name="arch" type="xml">
+            <calendar string="Agenda de trabajos" date_start="schedule_date" date_stop="schedule_date_end"
+                      color="user_id" mode="week" event_open_popup="0" quick_create="0">
+                <field name="partner_id"/>
+                <field name="vehicle_id"/>
+                <field name="user_id" filters="1" avatar_field="avatar_128"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_repair_order_calendar" model="ir.actions.act_window">
+        <field name="name">Agenda de trabajos</field>
+        <field name="path">agenda-taller</field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="view_id" ref="view_repair_order_calendar"/>
+        <field name="domain">[('state', '!=', 'cancel')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Agende un trabajo</p>
+            <p>Cree una orden de trabajo con su fecha programada para verla aquí.</p>
+        </field>
+    </record>
+
+</odoo>

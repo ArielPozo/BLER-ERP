@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_category_services" model="product.category">
+        <field name="name">Servicios de taller</field>
+    </record>
+    <record id="product_category_parts" model="product.category">
+        <field name="name">Repuestos</field>
+    </record>
+</odoo>

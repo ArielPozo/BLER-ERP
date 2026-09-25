@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú de Reparaciones: el tablero queda primero, así la app abre en él. -->
+    <menuitem id="menu_taller_dashboard" name="Tablero" parent="repair.menu_repair_order"
+              action="action_taller_dashboard" sequence="-10" groups="stock.group_stock_user"/>
+    <menuitem id="menu_taller_calendar" name="Agenda" parent="repair.menu_repair_order"
+              action="action_repair_order_calendar" sequence="11" groups="stock.group_stock_user"/>
+    <menuitem id="menu_taller_partners" name="Clientes" parent="repair.menu_repair_order"
+              action="action_partner_taller" sequence="12" groups="stock.group_stock_user"/>
+    <menuitem id="menu_taller_vehicles" name="Vehículos" parent="repair.menu_repair_order"
+              action="action_fleet_vehicle_taller" sequence="13" groups="stock.group_stock_user"/>
+    <menuitem id="menu_taller_catalog" name="Catálogo" parent="repair.menu_repair_order"
+              sequence="14" groups="stock.group_stock_user"/>
+    <menuitem id="menu_taller_services" name="Servicios" parent="menu_taller_catalog"
+              action="action_product_taller_services" sequence="1"/>
+    <menuitem id="menu_taller_parts" name="Repuestos" parent="menu_taller_catalog"
+              action="action_product_taller_parts" sequence="2"/>
+</odoo>

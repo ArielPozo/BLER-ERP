@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vehículos del cliente: se crean desde su ficha y quedan asociados -->
+    <record id="view_partner_form_taller" model="ir.ui.view">
+        <field name="name">res.partner.form.taller</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_taller_vehicles" type="object" class="oe_stat_button"
+                        icon="fa-car" groups="stock.group_stock_user,fleet.fleet_group_user">
+                    <field name="taller_vehicle_count" widget="statinfo" string="Vehículos"/>
+                </button>
+                <button name="action_view_taller_repairs" type="object" class="oe_stat_button"
+                        icon="fa-wrench" groups="stock.group_stock_user">
+                    <field name="taller_repair_count" widget="statinfo" string="Órdenes de trabajo"/>
+                </button>
+            </div>
+            <page name="contact_addresses" position="before">
+                <page string="Vehículos" name="taller_vehicles"
+                      groups="stock.group_stock_user,fleet.fleet_group_user">
+                    <field name="taller_vehicle_ids" context="{'default_driver_id': id}">
+                        <list>
+                            <field name="brand_logo_url" column_invisible="1"/>
+                            <field name="brand_icon_class" widget="car_make_icon" options="{'logo_field': 'brand_logo_url'}" nolabel="1" width="40px"/>
+                            <field name="license_plate" string="Placa"/>
+                            <field name="model_id" string="Marca / modelo"/>
+                            <field name="model_year" string="Año"/>
+                            <field name="odometer" string="Kilometraje"/>
+                            <field name="next_service_date"/>
+                            <field name="service_status" widget="badge"
+                                   decoration-danger="service_status == 'overdue'"
+                                   decoration-warning="service_status == 'soon'"
+                                   decoration-success="service_status == 'ok'"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!-- Acción "Clientes" del taller -->
+    <record id="action_partner_taller" model="ir.actions.act_window">
+        <field name="name">Clientes</field>
+        <field name="path">clientes-taller</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'res_partner_search_mode': 'customer', 'default_is_company': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Registre un cliente y sus vehículos</p>
+        </field>
+    </record>
+
+</odoo>

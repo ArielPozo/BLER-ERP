@@ -1,0 +1,16 @@
+.o_bler_taller_dashboard {
+    .o_bler_kpi {
+        transition: box-shadow 0.15s ease-in-out;
+
+        &:hover {
+            box-shadow: $box-shadow;
+        }
+    }
+
+    .o_bler_kpi_icon {
+        font-size: 1.6rem;
+        width: 2.5rem;
+        text-align: center;
+        color: $o-action;
+    }
+}

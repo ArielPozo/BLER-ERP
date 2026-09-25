@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_work_order" model="ir.actions.report">
+        <field name="name">Orden de trabajo</field>
+        <field name="model">repair.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bler_taller.report_work_order</field>
+        <field name="report_file">bler_taller.report_work_order</field>
+        <field name="print_report_name">'OT %s - %s' % (object.name.replace('/', '-'), object.vehicle_id.license_plate or '')</field>
+        <field name="binding_model_id" ref="repair.model_repair_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Orden de trabajo (CarCare): cliente, vehículo, trabajo solicitado,
+         servicios, repuestos, totales referenciales y firmas. No es factura. -->
+    <template id="report_work_order_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang or o.env.lang)"/>
+            <t t-set="currency" t-value="o.currency_id"/>
+            <t t-set="part_lines" t-value="o._get_part_lines()"/>
+            <div class="page">
+                <div class="d-flex justify-content-between align-items-end mb-3">
+                    <h2 class="mb-0">Orden de trabajo <span t-field="o.name"/></h2>
+                    <div class="text-end">
+                        <strong>Estado:</strong> <span t-field="o.state"/>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <h6 class="text-uppercase text-muted mb-1">Cliente</h6>
+                            <div t-if="o.partner_id">
+                                <strong t-field="o.partner_id.name"/>
+                                <div t-if="o.partner_id.vat">RUC/CI: <span t-field="o.partner_id.vat"/></div>
+                                <div t-if="o.partner_id.phone or o.partner_id.mobile">
+                                    Teléfono: <span t-out="o.partner_id.mobile or o.partner_id.phone"/>
+                                </div>
+                                <div t-if="o.partner_id.email">Correo: <span t-field="o.partner_id.email"/></div>
+                                <div t-if="o.partner_id.street">Dirección: <span t-field="o.partner_id.street"/></div>
+                            </div>
+                            <div t-else="" class="text-muted">Sin cliente</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2 h-100">
+                            <h6 class="text-uppercase text-muted mb-1">Vehículo</h6>
+                            <t t-set="v" t-value="o.vehicle_id"/>
+                            <div t-if="v">
+                                <strong><i t-if="v.brand_icon_class" t-attf-class="o_car_make #{v.brand_icon_class} me-1"/><img t-elif="v.brand_id.image_128" t-att-src="image_data_uri(v.brand_id.image_128)" style="height: 1.2em; max-width: 2.4em; object-fit: contain; vertical-align: middle;" class="me-1" alt=""/>Placa: <span t-field="v.license_plate"/></strong>
+                                <div><span t-field="v.brand_id"/> <span t-field="v.model_id.name"/>
+                                    <t t-if="v.model_year"> · <span t-field="v.model_year"/></t>
+                                    <t t-if="v.color"> · <span t-field="v.color"/></t>
+                                </div>
+                                <div t-if="v.vin_sn">VIN: <span t-field="v.vin_sn"/></div>
+                                <div t-if="o.odometer">Kilometraje de ingreso:
+                                    <span t-out="'{:,.0f}'.format(o.odometer).replace(',', '.')"/> <span t-field="o.odometer_unit"/>
+                                </div>
+                            </div>
+                            <div t-else="" class="text-muted">Sin vehículo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4"><strong>Fecha:</strong> <span t-field="o.schedule_date" t-options="{'widget': 'datetime'}"/></div>
+                    <div class="col-4" t-if="o.user_id"><strong>Mecánico:</strong> <span t-field="o.user_id"/></div>
+                    <div class="col-4" t-if="o.under_warranty"><strong>En garantía</strong></div>
+                </div>
+
+                <div t-if="o.repair_request" class="mb-3">
+                    <h5 class="border-bottom pb-1">Trabajo solicitado</h5>
+                    <p class="mb-0" t-field="o.repair_request"/>
+                </div>
+
+                <t t-if="o.service_line_ids">
+                    <h5 class="border-bottom pb-1">Servicios</h5>
+                    <table class="table table-sm o_main_table mb-3">
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th class="text-end">Cant.</th>
+                                <th class="text-end">P. unitario</th>
+                                <th class="text-end" t-if="any(o.service_line_ids.mapped('discount'))">Desc. %</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.service_line_ids" t-as="line">
+                                <td><span t-field="line.name"/></td>
+                                <td class="text-end"><span t-field="line.quantity"/></td>
+                                <td class="text-end"><span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                <td class="text-end" t-if="any(o.service_line_ids.mapped('discount'))"><span t-field="line.discount"/></td>
+                                <td class="text-end"><span t-field="line.price_subtotal"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <t t-if="part_lines">
+                    <h5 class="border-bottom pb-1">Repuestos</h5>
+                    <table class="table table-sm o_main_table mb-3">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descripción</th>
+                                <th class="text-end">Cant.</th>
+                                <th class="text-end">P. unitario</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="part_lines" t-as="pl">
+                                <t t-set="move" t-value="pl['move']"/>
+                                <td><span t-out="move.product_id.default_code or ''"/></td>
+                                <td><span t-out="move.product_id.name"/></td>
+                                <td class="text-end">
+                                    <span t-field="move.product_uom_qty"/>
+                                    <span t-field="move.product_uom.name" groups="uom.group_uom"/>
+                                </td>
+                                <td class="text-end"><span t-out="pl['price_unit']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                <td class="text-end"><span t-out="pl['subtotal']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <div class="row">
+                    <div class="col-7">
+                        <div t-if="o.next_service_date or o.next_service_km" class="border rounded p-2 mb-2">
+                            <strong>Próximo mantenimiento:</strong>
+                            <span t-if="o.next_service_date" t-field="o.next_service_date"/>
+                            <t t-if="o.next_service_date and o.next_service_km"> o </t>
+                            <t t-if="o.next_service_km">a los <span t-out="'{:,.0f}'.format(o.next_service_km).replace(',', '.')"/> km</t>
+                            (lo que ocurra primero).
+                        </div>
+                        <p class="small text-muted">
+                            Documento de control del taller, no es una factura. Valores
+                            referenciales sin impuestos; el valor a pagar consta en la
+                            factura electrónica.
+                        </p>
+                    </div>
+                    <div class="col-5">
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Servicios</td>
+                                <td class="text-end"><span t-field="o.amount_services"/></td>
+                            </tr>
+                            <tr>
+                                <td>Repuestos</td>
+                                <td class="text-end"><span t-field="o.amount_parts"/></td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td>Total estimado</td>
+                                <td class="text-end"><span t-field="o.amount_total"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-5 pt-4" style="page-break-inside: avoid;">
+                    <div class="col-5 offset-1 text-center">
+                        <div class="border-top border-dark pt-1">Firma del cliente</div>
+                    </div>
+                    <div class="col-5 text-center">
+                        <div class="border-top border-dark pt-1">Por el taller</div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_work_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="bler_taller.report_work_order_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

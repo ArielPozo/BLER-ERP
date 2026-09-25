@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_service_reminder" model="ir.cron">
+        <field name="name">Taller: recordatorios de mantenimiento</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send_service_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

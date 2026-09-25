@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Entrada "Mis vehículos" en /my -->
+    <template id="portal_my_home_taller" name="Mis vehículos" inherit_id="portal.portal_my_home"
+              customize_show="True" priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bler_taller/static/src/img/car.svg'"/>
+                <t t-set="title">Mis vehículos</t>
+                <t t-set="url" t-value="'/my/vehiculos'"/>
+                <t t-set="text">Historial de trabajos y próximos mantenimientos</t>
+                <t t-set="placeholder_count" t-value="'taller_vehicle_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_breadcrumbs_taller" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'taller_vehicles'" class="breadcrumb-item active">Mis vehículos</li>
+            <t t-if="page_name == 'taller_vehicle'">
+                <li class="breadcrumb-item"><a href="/my/vehiculos">Mis vehículos</a></li>
+                <li class="breadcrumb-item active" t-out="vehicle.license_plate or vehicle.name"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_service_badge">
+        <span t-if="v.service_status == 'overdue'" class="badge text-bg-danger">Mantenimiento vencido</span>
+        <span t-elif="v.service_status == 'soon'" class="badge text-bg-warning">Mantenimiento próximo</span>
+        <span t-elif="v.service_status == 'ok'" class="badge text-bg-success">Al día</span>
+    </template>
+
+    <!-- Lista de vehículos del cliente -->
+    <template id="portal_my_vehicles" name="Mis vehículos">
+        <t t-call="portal.portal_layout">
+            <h3 class="mt-3 mb-3">Mis vehículos</h3>
+            <div t-if="not vehicles" class="alert alert-info">
+                Aún no tiene vehículos registrados en el taller.
+            </div>
+            <div class="row g-3">
+                <div t-foreach="vehicles" t-as="v" class="col-12 col-md-6">
+                    <a t-attf-href="/my/vehiculos/#{v.id}" class="card h-100 text-reset text-decoration-none">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="mb-0">
+                                        <i t-if="v.brand_icon_class" t-attf-class="o_car_make #{v.brand_icon_class} me-1"/>
+                                        <img t-elif="v.brand_id.image_128" t-att-src="image_data_uri(v.brand_id.image_128)" style="height: 1.2em; max-width: 2.4em; object-fit: contain; vertical-align: middle;" class="me-1" alt=""/>
+                                        <t t-out="v.license_plate or '-'"/>
+                                    </h5>
+                                    <div class="text-muted" t-out="v.model_id.display_name"/>
+                                </div>
+                                <t t-call="bler_taller.portal_service_badge"/>
+                            </div>
+                            <div class="small mt-2">
+                                <div t-if="v.next_service_date">Próximo mantenimiento:
+                                    <span t-field="v.next_service_date"/>
+                                    <t t-if="v.next_service_km"> o <span t-out="'{:,.0f}'.format(v.next_service_km).replace(',', '.')"/> km</t>
+                                </div>
+                                <div t-if="v.last_repair_date">Última visita: <span t-field="v.last_repair_date" t-options="{'widget': 'date'}"/></div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Ficha del vehículo en el portal -->
+    <template id="portal_my_vehicle" name="Mi vehículo">
+        <t t-call="portal.portal_layout">
+            <t t-set="v" t-value="vehicle"/>
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 mb-3">
+                <div>
+                    <h3 class="mb-0"><i t-if="v.brand_icon_class" t-attf-class="o_car_make #{v.brand_icon_class} me-2"/><img t-elif="v.brand_id.image_128" t-att-src="image_data_uri(v.brand_id.image_128)" style="height: 1.2em; max-width: 2.4em; object-fit: contain; vertical-align: middle;" class="me-2" alt=""/><t t-out="v.license_plate"/> <small class="text-muted" t-out="v.model_id.display_name"/></h3>
+                    <t t-call="bler_taller.portal_service_badge"/>
+                </div>
+                <a t-attf-href="/my/vehiculos/#{v.id}/ficha?download=1" class="btn btn-secondary">
+                    <i class="fa fa-download"/> Descargar ficha
+                </a>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="border rounded p-2 h-100">
+                        <div class="small text-muted">Kilometraje</div>
+                        <strong t-out="'{:,.0f}'.format(v.odometer).replace(',', '.')"/> <span t-field="v.odometer_unit"/>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="border rounded p-2 h-100">
+                        <div class="small text-muted">Próximo mantenimiento</div>
+                        <strong t-if="v.next_service_date" t-field="v.next_service_date"/>
+                        <div t-if="v.next_service_km" class="small"><t t-out="'{:,.0f}'.format(v.next_service_km).replace(',', '.')"/> km</div>
+                        <span t-if="not v.next_service_date and not v.next_service_km" class="text-muted">Sin programar</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="border rounded p-2 h-100">
+                        <div class="small text-muted">Visitas</div>
+                        <strong t-out="len(repairs)"/>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="border rounded p-2 h-100">
+                        <div class="small text-muted">Año / color</div>
+                        <strong t-out="' · '.join(filter(None, [v.model_year, v.color])) or '-'"/>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Historial de trabajos</h4>
+            <div t-if="not repairs" class="alert alert-info">Sin trabajos registrados.</div>
+            <div t-else="" class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Orden</th>
+                            <th class="d-none d-md-table-cell">Trabajo</th>
+                            <th>Estado</th>
+                            <th class="text-end">Total</th>
+                            <th/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="repairs" t-as="r">
+                            <td><span t-field="r.schedule_date" t-options="{'widget': 'date'}"/></td>
+                            <td t-out="r.name"/>
+                            <td class="d-none d-md-table-cell small">
+                                <t t-out="r.repair_request or ', '.join(r.service_line_ids.mapped('product_id.name'))"/>
+                            </td>
+                            <td><span class="badge text-bg-light" t-field="r.state"/></td>
+                            <td class="text-end"><span t-field="r.amount_total"/></td>
+                            <td class="text-end">
+                                <a t-attf-href="/my/vehiculos/#{v.id}/orden/#{r.id}?download=1" title="Descargar orden de trabajo">
+                                    <i class="fa fa-file-pdf-o"/>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+</odoo>

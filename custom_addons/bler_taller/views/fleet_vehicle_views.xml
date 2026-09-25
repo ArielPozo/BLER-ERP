@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Ficha del vehículo para el taller: datos del auto, cliente, resumen e
+         historial. Tiene prioridad sobre el formulario de Flota (pensado para
+         flotas de empresa: contratos, conductores, impuestos). -->
+    <record id="fleet_vehicle_view_form_taller" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.taller</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <form string="Vehículo">
+                <header>
+                    <button name="action_new_repair_order" type="object" string="Nueva orden de trabajo"
+                            class="btn-primary" invisible="not id"/>
+                    <button name="action_print_vehicle_history" type="object" string="Imprimir ficha"
+                            icon="fa-print" invisible="not id"/>
+                </header>
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <field name="vehicle_type" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_repair_orders" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="repair_order_count" widget="statinfo" string="Órdenes"/>
+                        </button>
+                        <button name="return_action_to_open" type="object" class="oe_stat_button"
+                                icon="fa-tachometer" context="{'xml_id': 'fleet_vehicle_odometer_action'}">
+                            <field name="odometer_count" widget="statinfo" string="Kilometraje"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivado" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="image_128" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="license_plate" string="Placa"/>
+                        <h1>
+                            <field name="license_plate" placeholder="p. ej. PBA-1234"/>
+                        </h1>
+                        <label for="model_id" string="Marca / modelo"/>
+                        <h2 class="d-flex align-items-center gap-2">
+                            <field name="brand_logo_url" invisible="1"/>
+                            <field name="brand_icon_class" widget="car_make_icon" options="{'logo_field': 'brand_logo_url'}" invisible="not brand_icon_class and not brand_logo_url"/>
+                            <field name="model_id" placeholder="p. ej. Chevrolet/Aveo" class="w-100"/>
+                        </h2>
+                        <field name="tag_ids" widget="many2many_tags" placeholder="Etiquetas"
+                               options="{'color_field': 'color', 'no_create_edit': True}"/>
+                    </div>
+                    <group>
+                        <group string="Cliente">
+                            <field name="driver_id" string="Propietario" widget="res_partner_many2one"
+                                   context="{'res_partner_search_mode': 'customer', 'show_vat': True}"/>
+                            <field name="vin_sn" string="VIN / chasis"/>
+                            <field name="model_year" string="Año"/>
+                            <field name="color" string="Color"/>
+                            <field name="transmission" string="Transmisión"/>
+                            <field name="fuel_type" string="Combustible"/>
+                        </group>
+                        <group string="Mantenimiento">
+                            <label for="odometer" string="Kilometraje actual"/>
+                            <div class="o_row">
+                                <field name="odometer"/>
+                                <field name="odometer_unit"/>
+                            </div>
+                            <field name="next_service_date"/>
+                            <field name="next_service_km"/>
+                            <field name="service_status" widget="badge"
+                                   decoration-danger="service_status == 'overdue'"
+                                   decoration-warning="service_status == 'soon'"
+                                   decoration-success="service_status == 'ok'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Historial de taller" name="taller_history">
+                            <group>
+                                <group>
+                                    <field name="last_repair_date"/>
+                                    <field name="repair_done_count"/>
+                                </group>
+                                <group>
+                                    <field name="repair_amount_total"/>
+                                </group>
+                            </group>
+                            <field name="repair_order_ids" readonly="1"
+                                   context="{'default_vehicle_id': id, 'default_partner_id': driver_id}">
+                                <list default_order="schedule_date desc">
+                                    <field name="schedule_date" string="Fecha" widget="date"/>
+                                    <field name="name" string="Orden"/>
+                                    <field name="odometer"/>
+                                    <field name="repair_request" optional="show"/>
+                                    <field name="user_id" optional="show"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-info="state in ('draft', 'confirmed')"
+                                           decoration-warning="state == 'under_repair'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notas" name="notes">
+                            <field name="description" placeholder="Observaciones del vehículo..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Marcas: ícono de car-makes-icons en la lista -->
+    <record id="fleet_vehicle_model_brand_view_tree_taller" model="ir.ui.view">
+        <field name="name">fleet.vehicle.model.brand.list.taller</field>
+        <field name="model">fleet.vehicle.model.brand</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_brand_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="logo_url" column_invisible="1"/>
+                <field name="icon_class" widget="car_make_icon" options="{'logo_field': 'logo_url'}" nolabel="1" width="40px"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_list_taller" model="ir.ui.view">
+        <field name="name">fleet.vehicle.list.taller</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <list string="Vehículos">
+                <field name="brand_logo_url" column_invisible="1"/>
+                <field name="brand_icon_class" widget="car_make_icon" options="{'logo_field': 'brand_logo_url'}" nolabel="1" width="40px"/>
+                <field name="license_plate" string="Placa"/>
+                <field name="model_id" string="Marca / modelo"/>
+                <field name="model_year" string="Año" optional="show"/>
+                <field name="driver_id" string="Propietario"/>
+                <field name="odometer" string="Kilometraje" optional="show"/>
+                <field name="next_service_date" optional="show"/>
+                <field name="service_status" widget="badge" optional="show"
+                       decoration-danger="service_status == 'overdue'"
+                       decoration-warning="service_status == 'soon'"
+                       decoration-success="service_status == 'ok'"/>
+                <field name="repair_order_count" string="Órdenes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_view_search_taller" model="ir.ui.view">
+        <field name="name">fleet.vehicle.search.taller</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter string="Mantenimiento en 30 días" name="service_soon"
+                        domain="[('next_service_date', '!=', False), ('next_service_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_fleet_vehicle_taller" model="ir.actions.act_window">
+        <field name="name">Vehículos</field>
+        <field name="path">vehiculos-taller</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('fleet_vehicle_view_list_taller')}),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('fleet_vehicle_view_form_taller')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Registre el vehículo de un cliente</p>
+        </field>
+    </record>
+
+</odoo>

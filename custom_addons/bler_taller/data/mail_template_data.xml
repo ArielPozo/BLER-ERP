@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_service_reminder" model="mail.template">
+        <field name="name">Taller: recordatorio de mantenimiento</field>
+        <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+        <field name="subject">Recordatorio de mantenimiento: {{ object.license_plate or object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.driver_id.id }}</field>
+        <field name="lang">{{ object.driver_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Estimado/a <t t-out="object.driver_id.name or ''">cliente</t>:</p>
+    <p>
+        Le recordamos que su vehículo
+        <strong t-out="object.model_id.display_name or ''">Chevrolet/Aveo</strong>
+        con placa <strong t-out="object.license_plate or ''">PBA-1234</strong>
+        tiene programado su próximo mantenimiento para el
+        <strong t-out="format_date(object.next_service_date)">01/01/2026</strong><t t-if="object.next_service_km">
+        o a los <strong t-out="'{:,.0f}'.format(object.next_service_km).replace(',', '.')">10.000</strong> km</t>.
+    </p>
+    <p>Responda a este correo o llámenos para agendar su cita.</p>
+    <p>Puede ver el historial de su vehículo en <a t-att-href="object.get_base_url() + '/my/vehiculos'">su portal de cliente</a>.</p>
+    <p>Saludos,<br/><t t-out="object.company_id.name or ''">El taller</t></p>
+</div>
+        </field>
+    </record>
+</odoo>
