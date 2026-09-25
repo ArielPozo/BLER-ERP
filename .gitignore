@@ -7,8 +7,9 @@
 # Respaldos de base de datos: contienen datos de clientes
 /odoo_stack/backups/
 
-# Configuración local de Claude Code
+# Configuración local de Claude Code y sus worktrees temporales
 /.claude/settings.local.json
+/.claude/worktrees/
 
 # Python
 __pycache__/
