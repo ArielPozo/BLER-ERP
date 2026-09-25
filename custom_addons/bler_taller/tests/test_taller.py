@@ -186,6 +186,58 @@ class TestTallerPortal(HttpCase, TallerCommon):
 
         self.assertEqual(self.url_open("/my/vehiculos/%s" % other.id).status_code, 404)
 
+    def test_public_vehicle_link(self):
+        repair = self._create_repair()
+        vehicle = self.vehicle
+        self.assertFalse(vehicle.public_url, "Sin token no hay enlace")
+        vehicle.action_print_qr_label()
+        self.assertTrue(vehicle.access_token)
+        self.assertTrue(vehicle.public_url.endswith(
+            "/vehiculo/%s?access_token=%s" % (vehicle.id, vehicle.access_token)))
+        url = "/vehiculo/%s" % vehicle.id
+
+        # Sin token o con uno inválido: no existe.
+        self.assertEqual(self.url_open(url).status_code, 404)
+        self.assertEqual(self.url_open(url + "?access_token=malo").status_code, 404)
+
+        # Con el token: ficha pública sin datos del cliente.
+        token = vehicle.access_token
+        res = self.url_open(url + "?access_token=" + token)
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("PBA-1234", res.text)
+        self.assertIn(repair.service_line_ids[:1].product_id.name, res.text)
+        self.assertNotIn(self.partner.name, res.text)
+        self.assertNotIn("/my/vehiculos/%s/orden" % vehicle.id, res.text)
+        self.assertEqual(res.headers.get("Referrer-Policy"), "no-referrer")
+
+        # Regenerar invalida la etiqueta anterior.
+        vehicle.action_regenerate_public_url()
+        self.assertNotEqual(vehicle.access_token, token)
+        self.assertEqual(self.url_open(url + "?access_token=" + token).status_code, 404)
+
+    def test_public_vehicle_link_owner_redirect(self):
+        self.env["res.users"].create({
+            "name": "Cliente Portal",
+            "login": "cliente_qr",
+            "password": "cliente_qr",
+            "partner_id": self.partner.id,
+            "groups_id": [fields.Command.set([self.env.ref("base.group_portal").id])],
+        })
+        self.vehicle._portal_ensure_token()
+        self.authenticate("cliente_qr", "cliente_qr")
+        res = self.url_open("/vehiculo/%s?access_token=%s" % (self.vehicle.id, self.vehicle.access_token),
+                            allow_redirects=False)
+        self.assertIn(res.status_code, (302, 303))
+        self.assertTrue(res.headers["Location"].endswith("/my/vehiculos/%s" % self.vehicle.id))
+
+    def test_vehicle_label_report(self):
+        self.vehicle.action_print_qr_label()
+        self.assertTrue(self.vehicle.access_token, "Imprimir la etiqueta genera el enlace")
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "bler_taller.report_vehicle_label", self.vehicle.ids)[0].decode()
+        self.assertIn("PBA-1234", html)
+        self.assertIn("data:image/png;base64", html)
+
 
 @tagged("post_install", "-at_install")
 class TestCarMakeIcons(TransactionCase):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "BLER ERP - Taller",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Inventory/Repair",
     "summary": "Órdenes de trabajo, agenda, tablero, historial por vehículo y portal de clientes",
     "description": """
@@ -24,6 +24,9 @@ aplicaciones de referencia CarCare y RepairOS):
 * Portal de clientes (/my/vehiculos): historial, próximos mantenimientos y
   descarga de las órdenes de trabajo. Recordatorio por correo antes del
   próximo mantenimiento.
+* Etiqueta QR/NFC para el tablero: enlace con token a una ficha pública
+  (sin datos del cliente ni precios); el propietario con sesión ve la
+  ficha completa. El enlace se puede regenerar.
     """,
     "author": "BLER ERP",
     "license": "LGPL-3",
@@ -45,6 +48,7 @@ aplicaciones de referencia CarCare y RepairOS):
         "data/ir_cron_data.xml",
         "report/work_order_report.xml",
         "report/vehicle_report.xml",
+        "report/vehicle_label_report.xml",
         "views/product_views.xml",
         "views/repair_order_views.xml",
         "views/fleet_vehicle_views.xml",

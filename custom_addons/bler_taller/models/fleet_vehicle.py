@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import uuid
 
 from dateutil.relativedelta import relativedelta
 
@@ -12,7 +13,8 @@ REMINDER_DAYS = 7
 
 
 class FleetVehicle(models.Model):
-    _inherit = "fleet.vehicle"
+    _name = "fleet.vehicle"
+    _inherit = ["fleet.vehicle", "portal.mixin"]
 
     brand_icon_class = fields.Char(related="brand_id.icon_class", string="Ícono de la marca")
     brand_logo_url = fields.Char(related="brand_id.logo_url", string="Logo de la marca")
@@ -26,6 +28,12 @@ class FleetVehicle(models.Model):
     service_status = fields.Selection(
         [("none", "Sin programar"), ("ok", "Al día"), ("soon", "Próximo"), ("overdue", "Vencido")],
         string="Mantenimiento", compute="_compute_service_status",
+    )
+    public_url = fields.Char(
+        string="Enlace de la ficha", compute="_compute_public_url",
+        help="Enlace de la etiqueta QR/NFC del vehículo. Quien lo tenga ve la "
+             "ficha pública (sin datos del cliente ni precios); el dueño, con "
+             "sesión iniciada, ve la ficha completa.",
     )
     last_repair_date = fields.Datetime(string="Última visita", compute="_compute_repair_summary")
     repair_done_count = fields.Integer(string="Trabajos terminados", compute="_compute_repair_summary")
@@ -52,6 +60,31 @@ class FleetVehicle(models.Model):
             vehicle.repair_amount_total = sum(done.mapped("amount_total"))
             dates = vehicle.repair_order_ids.filtered(lambda r: r.state != "cancel").mapped("schedule_date")
             vehicle.last_repair_date = max(dates) if dates else False
+
+    def _compute_access_url(self):
+        super()._compute_access_url()
+        for vehicle in self:
+            vehicle.access_url = "/vehiculo/%s" % vehicle.id
+
+    @api.depends("access_token")
+    def _compute_public_url(self):
+        for vehicle in self:
+            if vehicle.id and vehicle.access_token:
+                vehicle.public_url = "%s%s?access_token=%s" % (
+                    vehicle.get_base_url(), vehicle.access_url, vehicle.access_token)
+            else:
+                vehicle.public_url = False
+
+    def action_print_qr_label(self):
+        for vehicle in self:
+            vehicle._portal_ensure_token()
+        return self.env.ref("bler_taller.action_report_vehicle_label").report_action(self)
+
+    def action_regenerate_public_url(self):
+        """Invalida el enlace anterior (auto vendido, etiqueta perdida)."""
+        for vehicle in self:
+            vehicle.sudo().access_token = str(uuid.uuid4())
+            vehicle.message_post(body="Se generó un nuevo enlace de la ficha; la etiqueta QR/NFC anterior ya no funciona.")
 
     def write(self, vals):
         if "next_service_date" in vals:

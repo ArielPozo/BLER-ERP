@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tamaño tarjeta de presentación: se imprime en papel adhesivo y se
+         pega en el tablero. Una etiqueta por página. -->
+    <record id="paperformat_vehicle_label" model="report.paperformat">
+        <field name="name">Etiqueta de vehículo 90 x 55 mm</field>
+        <field name="format">custom</field>
+        <field name="page_width">90</field>
+        <field name="page_height">55</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_vehicle_label" model="ir.actions.report">
+        <field name="name">Etiqueta QR del vehículo</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bler_taller.report_vehicle_label</field>
+        <field name="report_file">bler_taller.report_vehicle_label</field>
+        <field name="print_report_name">'Etiqueta %s' % (object.license_plate or object.name)</field>
+        <field name="paperformat_id" ref="paperformat_vehicle_label"/>
+    </record>
+
+    <template id="report_vehicle_label">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="v">
+                <t t-call="web.basic_layout">
+                    <t t-set="company" t-value="v.company_id or res_company"/>
+                    <div class="page" style="page-break-after: always;">
+                        <table style="width: 100%; height: 47mm; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 45mm; vertical-align: middle; text-align: center;">
+                                    <t t-if="v.public_url">
+                                        <span t-out="v.public_url"
+                                              t-options="{'widget': 'barcode', 'symbology': 'QR', 'width': 400, 'height': 400, 'quiet': 0, 'img_style': 'width: 42mm; height: 42mm;', 'img_alt': 'QR'}"/>
+                                    </t>
+                                </td>
+                                <td style="vertical-align: middle; padding-left: 3mm;">
+                                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)"
+                                         style="max-height: 9mm; max-width: 36mm;" alt=""/>
+                                    <div style="font-size: 20pt; font-weight: bold; line-height: 1.1; margin-top: 2mm;"
+                                         t-out="v.license_plate or v.name"/>
+                                    <div style="font-size: 8pt; color: #555;" t-out="v.model_id.display_name"/>
+                                    <div style="font-size: 8pt; margin-top: 2mm; line-height: 1.2;">
+                                        Escanee el código para ver la ficha y el próximo mantenimiento.
+                                    </div>
+                                    <div t-if="company.phone" style="font-size: 8pt; margin-top: 1mm;">
+                                        <t t-out="company.name"/> · <t t-out="company.phone"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

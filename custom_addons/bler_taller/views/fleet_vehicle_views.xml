@@ -15,6 +15,8 @@
                             class="btn-primary" invisible="not id"/>
                     <button name="action_print_vehicle_history" type="object" string="Imprimir ficha"
                             icon="fa-print" invisible="not id"/>
+                    <button name="action_print_qr_label" type="object" string="Etiqueta QR"
+                            icon="fa-qrcode" invisible="not id"/>
                 </header>
                 <sheet>
                     <field name="company_id" invisible="1"/>
@@ -98,6 +100,24 @@
                                            decoration-warning="state == 'under_repair'"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="Enlace QR / NFC" name="public_link" invisible="not id">
+                            <field name="access_token" invisible="1"/>
+                            <p class="text-muted">
+                                Enlace de la etiqueta del tablero. Quien lo abra ve la ficha
+                                pública: kilometraje, próximo mantenimiento e historial de
+                                trabajos, sin datos del cliente ni precios. El propietario, con su
+                                usuario del portal, ve la ficha completa. Para una etiqueta NFC,
+                                grabe este mismo enlace (registro URL).
+                            </p>
+                            <group>
+                                <field name="public_url" widget="CopyClipboardChar" invisible="not access_token"/>
+                            </group>
+                            <button name="action_regenerate_public_url" type="object" string="Generar enlace"
+                                    class="btn-secondary" icon="fa-link" invisible="access_token"/>
+                            <button name="action_regenerate_public_url" type="object" string="Regenerar enlace"
+                                    class="btn-secondary" icon="fa-refresh" invisible="not access_token"
+                                    confirm="La etiqueta QR/NFC actual dejará de funcionar y habrá que imprimir una nueva. ¿Continuar?"/>
                         </page>
                         <page string="Notas" name="notes">
                             <field name="description" placeholder="Observaciones del vehículo..."/>

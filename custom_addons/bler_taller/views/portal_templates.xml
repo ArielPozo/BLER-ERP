@@ -148,4 +148,93 @@
         </t>
     </template>
 
+    <!-- Ficha pública del vehículo (enlace con token de la etiqueta QR/NFC).
+         Nivel público: sin datos del cliente, precios ni PDF. El dueño con
+         sesión iniciada es redirigido a /my/vehiculos/<id>. -->
+    <template id="public_vehicle" name="Ficha pública del vehículo">
+        <t t-call="portal.frontend_layout">
+            <t t-set="head">
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="no-referrer"/>
+            </t>
+            <t t-set="v" t-value="vehicle"/>
+            <div id="wrap" class="o_portal_wrap">
+                <div class="container pt-3 pb-5">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                        <div>
+                            <h3 class="mb-0"><i t-if="v.brand_icon_class" t-attf-class="o_car_make #{v.brand_icon_class} me-2"/><img t-elif="v.brand_id.image_128" t-att-src="image_data_uri(v.brand_id.image_128)" style="height: 1.2em; max-width: 2.4em; object-fit: contain; vertical-align: middle;" class="me-2" alt=""/><t t-out="v.license_plate"/> <small class="text-muted" t-out="v.model_id.display_name"/></h3>
+                            <t t-call="bler_taller.portal_service_badge"/>
+                        </div>
+                        <a t-if="not is_logged_in" t-att-href="login_url" class="btn btn-secondary">
+                            <i class="fa fa-sign-in"/> Soy el propietario: ver ficha completa
+                        </a>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="small text-muted">Kilometraje</div>
+                                <strong t-out="'{:,.0f}'.format(v.odometer).replace(',', '.')"/> <span t-field="v.odometer_unit"/>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="small text-muted">Próximo mantenimiento</div>
+                                <strong t-if="v.next_service_date" t-field="v.next_service_date"/>
+                                <div t-if="v.next_service_km" class="small"><t t-out="'{:,.0f}'.format(v.next_service_km).replace(',', '.')"/> km</div>
+                                <span t-if="not v.next_service_date and not v.next_service_km" class="text-muted">Sin programar</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="small text-muted">Visitas</div>
+                                <strong t-out="len(repairs)"/>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded p-2 h-100">
+                                <div class="small text-muted">Año / color</div>
+                                <strong t-out="' · '.join(filter(None, [v.model_year, v.color])) or '-'"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Historial de trabajos</h4>
+                    <div t-if="not repairs" class="alert alert-info">Sin trabajos registrados.</div>
+                    <div t-else="" class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Trabajo</th>
+                                    <th class="text-end d-none d-md-table-cell">Kilometraje</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="repairs" t-as="r">
+                                    <td><span t-field="r.schedule_date" t-options="{'widget': 'date'}"/></td>
+                                    <td class="small">
+                                        <t t-out="', '.join(r.service_line_ids.mapped('product_id.name')) or r.repair_request or r.name"/>
+                                    </td>
+                                    <td class="text-end d-none d-md-table-cell">
+                                        <t t-if="r.odometer" t-out="'{:,.0f}'.format(r.odometer).replace(',', '.')"/>
+                                    </td>
+                                    <td><span class="badge text-bg-light" t-field="r.state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="border rounded p-3 mt-4 bg-light-subtle">
+                        <div class="small text-muted">Atendido por</div>
+                        <strong t-out="company.name"/>
+                        <div t-if="company.phone"><i class="fa fa-phone me-1"/><a t-attf-href="tel:#{company.phone}" t-out="company.phone"/></div>
+                        <div t-if="company.email"><i class="fa fa-envelope me-1"/><a t-attf-href="mailto:#{company.email}" t-out="company.email"/></div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
 </odoo>
