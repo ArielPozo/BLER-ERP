@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pestaña "Marca" en la ficha de la compañía -->
+    <record id="view_company_form_bler" model="ir.ui.view">
+        <field name="name">res.company.form.bler</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <page name="general_info" position="after">
+                <page string="Marca" name="bler_branding">
+                    <group>
+                        <group string="Barra lateral">
+                            <field name="bler_logo_card_transparent"/>
+                        </group>
+                        <div class="text-muted">
+                            La barra lateral muestra el logo de la compañía en una
+                            tarjeta blanca. Si su logo está hecho para fondo oscuro,
+                            active esta opción para quitar el fondo. El cambio se ve
+                            al recargar la página.
+                        </div>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+</odoo>

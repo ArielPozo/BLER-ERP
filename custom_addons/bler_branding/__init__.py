@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
 import base64
+import hashlib
 import re
 
 from odoo.tools import file_open
 
 from . import controllers
+from . import models
 
-BLER_FAVICON = "bler_branding/static/src/img/favicon_placeholder.ico"
+BLER_FAVICON = "bler_branding/static/src/img/favicon.ico"
+
+# SHA-256 de favicons que este módulo instaló antes (el provisional de
+# 18.0.1.2.0 y anteriores). Se reemplazan igual que el de Odoo.
+OLD_BLER_FAVICONS = {
+    "c813109747305f09f0e9ffad1bae3b4dbb4a011877378bb7430c9e28904edb13",
+}
 
 BRAND_NAME = "BLER ERP"
 
@@ -88,8 +96,9 @@ def _rebrand_mail_templates(env):
 def _replace_default_favicon(env):
     """Si muk_web_theme está instalado, el favicon sale del campo
     res.company.favicon, que MuK llena al instalarse con el favicon de Odoo.
-    Solo se reemplaza en las compañías que aún tienen ese favicon por defecto;
-    un favicon subido en Ajustes → Marca se respeta."""
+    Solo se reemplaza en las compañías que aún tienen ese favicon por defecto
+    o uno anterior de BLER ERP (OLD_BLER_FAVICONS); un favicon subido en
+    Ajustes → Marca se respeta."""
     Company = env["res.company"].sudo()
     if "favicon" not in Company._fields:
         return
@@ -98,5 +107,8 @@ def _replace_default_favicon(env):
     with file_open(BLER_FAVICON, "rb") as file:
         bler_favicon = base64.b64encode(file.read())
     for company in Company.with_context(bin_size=False).search([]):
-        if company.favicon == odoo_favicon:
+        if not company.favicon or company.favicon == bler_favicon:
+            continue
+        old_hash = hashlib.sha256(base64.b64decode(company.favicon)).hexdigest()
+        if company.favicon == odoo_favicon or old_hash in OLD_BLER_FAVICONS:
             company.favicon = bler_favicon

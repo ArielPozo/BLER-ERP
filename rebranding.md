@@ -58,11 +58,11 @@ Hay dos caminos:
 ## Pendiente
 
 - [x] Licencia de la raíz del repositorio: **resuelto sin `LICENSE` en la raíz**. Por decisión del propietario, cada componente conserva exactamente la licencia de su proyecto y módulo de origen (campo `license` de cada `__manifest__.py`, archivos `LICENSE`/`COPYRIGHT` y cabeceras). No se cambia la licencia ni el `author` de módulos de terceros. El `README.md` resume las licencias por componente.
-- [x] Crear el módulo `bler_branding` (título de la pestaña, favicon e íconos PWA, pie del login y del portal, menú de usuario). El logo y los íconos son provisionales: reemplazar los archivos de `bler_branding/static/src/img/` y `static/description/icon.png` conservando los nombres.
+- [x] Crear el módulo `bler_branding` (título de la pestaña, favicon e íconos PWA, pie del login y del portal, menú de usuario). El logo y los íconos oficiales (18.0.1.3.0) salen de `brand/`; para cambiarlos, reemplazar los archivos de `bler_branding/static/src/img/` y `static/description/icon.png` conservando los nombres.
 - [x] Cambiar `author` a "BLER ERP" solo en módulos propios (`taller_ec_flota`, `bler_branding`).
 - [x] Revisar textos que digan "Taller EC" en vistas y menús (`taller_ec_flota`: nombre del módulo y del grupo "BLER ERP: menús completos"). El nombre técnico `taller_ec_flota` se mantiene.
 - [x] Añadir un `README.md` que diga "BLER ERP, basado en Odoo 18 Community", con créditos a Odoo S.A., MuK IT, OCA y Somatech.
-- [ ] Subir el logo oficial de BLER ERP como logo de la compañía (Ajustes → Compañías) y en Ajustes → Marca de MuK (reemplaza "Your logo" de la barra lateral). Mientras tanto se puede usar `bler_branding/static/src/img/bler_logo_placeholder.png`.
+- [x] Logo oficial de BLER ERP como logo de la compañía (`bler_branding/static/src/img/bler_logo.png`, sale en el login y en los reportes) y en la barra lateral de MuK (`appbar_image` = `bler_logo_sidebar.png`, versión apilada para fondo oscuro). Se cargaron en la base `taller_ec` con `odoo shell`; en una base nueva, subirlos en Ajustes → Compañías y Ajustes → Marca.
 - [x] Textos con "Odoo" en diálogos y correos (`bler_branding` 18.0.1.2.0):
   - Diálogos: título por defecto y encabezados ("Error de servidor de BLER ERP", "Advertencia de BLER ERP", "Expiró la sesión de BLER ERP") y el aviso de sesión expirada de las páginas públicas. Se reemplaza "Odoo" sobre el texto ya traducido; "Odoo.com" y "Odoo Enterprise" se dejan porque nombran servicios de Odoo S.A.
   - Correos QWeb (notificaciones, restablecer contraseña, alerta de nuevo dispositivo, resumen periódico): sin "Powered by Odoo". Se conservan "Unfollow" y el enlace para darse de baja del resumen, que queda como "Sent by BLER ERP".

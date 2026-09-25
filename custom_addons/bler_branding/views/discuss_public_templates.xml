@@ -8,7 +8,7 @@
             <attribute name="t-esc">title or 'BLER ERP'</attribute>
         </xpath>
         <xpath expr="//head/link[@rel='shortcut icon']" position="attributes">
-            <attribute name="t-att-href">x_icon or '/bler_branding/static/src/img/favicon_placeholder.ico'</attribute>
+            <attribute name="t-att-href">x_icon or '/bler_branding/static/src/img/favicon.ico'</attribute>
         </xpath>
     </template>
 

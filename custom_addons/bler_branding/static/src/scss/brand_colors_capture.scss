@@ -1,0 +1,6 @@
+// Colores de marca del modo claro (Ajustes > Generales > Colores de MuK),
+// guardados antes de que colors_dark.scss los reemplace en el paquete oscuro.
+// Los usa brand_accents.dark.scss. Se carga justo después de colors_light.scss
+// (o de su versión personalizada desde Ajustes).
+$bler-light-brand: $mk_color_brand;
+$bler-light-primary: $mk_color_primary;

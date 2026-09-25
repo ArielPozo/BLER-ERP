@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bler_branding.AppsBar" t-inherit="muk_web_appsbar.AppsBar" t-inherit-mode="extension">
+        <xpath expr="//ul[hasclass('mk_apps_sidebar_menu')]" position="before">
+            <div class="o_bler_company_card" t-att-class="{'o_bler_company_card_transparent': companyCardTransparent}" t-att-title="companyName">
+                <img class="o_bler_company_logo" t-att-src="companyLogoUrl" t-att-alt="companyName"/>
+                <img class="o_bler_company_icon" t-att-src="companyIconUrl" t-att-alt="companyName"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

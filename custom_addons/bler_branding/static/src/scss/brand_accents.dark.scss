@@ -1,0 +1,17 @@
+// Modo oscuro: los colores de marca del modo claro no se usan como fondo (el
+// tema oscuro pone los suyos). Para que la marca siga presente, se muestran
+// como línea inferior en los lugares donde el modo claro los usa de fondo:
+// la barra superior (color de marca) y los botones principales y el paso
+// actual de la barra de estado (color primario).
+$bler-accent-width: 3px;
+
+// MuK quita el borde de la barra con `.o_main_navbar { border-bottom: none !important }`.
+.o_web_client .o_main_navbar {
+    border-bottom: $bler-accent-width solid $bler-light-brand !important;
+}
+
+// Sombra interior en lugar de borde: no cambia el alto de los botones.
+.btn-primary,
+.o_statusbar_status .o_arrow_button_current {
+    box-shadow: inset 0 (-$bler-accent-width) 0 $bler-light-primary;
+}

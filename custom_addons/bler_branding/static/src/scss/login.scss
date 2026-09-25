@@ -1,0 +1,140 @@
+// Login oscuro de BLER ERP. Colores de la paleta (brand/README.md):
+// índigo noche #1E1B4B, violeta hechizo #6D28D9, amatista #8B5CF6, cian #22D3EE.
+$bler-night: #1E1B4B;
+$bler-violet: #6D28D9;
+$bler-amethyst: #8B5CF6;
+$bler-cyan: #22D3EE;
+$bler-text: #E5E7EB;
+$bler-muted: #A5A3C9;
+$bler-line: rgba(255, 255, 255, 0.12);
+
+body.o_bler_login {
+    min-height: 100%;
+    background: radial-gradient(ellipse at top, #312E81 0%, $bler-night 55%, #0F0D2A 100%) fixed;
+    color: $bler-text;
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid $bler-line !important;
+        border-radius: 1rem;
+        box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+        color: $bler-text;
+
+        // El editor HTML pone un fondo blanco al 90 % a toda .card-body con un
+        // selector de especificidad alta (0,4,0), de ahí el !important.
+        .card-body {
+            --bg-light: transparent;
+            --color-light: #{$bler-text};
+            background-color: transparent !important;
+            color: $bler-text !important;
+        }
+    }
+
+    .border-top,
+    .border-bottom,
+    .border-end {
+        border-color: $bler-line !important;
+    }
+
+    .form-label,
+    .col-form-label,
+    p {
+        color: $bler-text;
+    }
+
+    .text-muted,
+    .form-text {
+        color: $bler-muted !important;
+    }
+
+    // El editor también fuerza .text-muted oscuro dentro de .card-body con
+    // especificidad (0,5,0); este selector es (0,5,1).
+    .card.o_database_list .card-body .text-muted {
+        color: $bler-muted !important;
+    }
+
+    a,
+    .btn-link {
+        color: $bler-cyan;
+
+        &:hover,
+        &:focus {
+            color: lighten($bler-cyan, 15%);
+        }
+    }
+
+    .form-control,
+    .form-select {
+        background-color: rgba(15, 13, 42, 0.7);
+        border-color: rgba(139, 92, 246, 0.35);
+        color: #F9FAFB;
+
+        &::placeholder {
+            color: #7C7AA6;
+        }
+
+        &:focus {
+            background-color: rgba(15, 13, 42, 0.9);
+            border-color: $bler-amethyst;
+            box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.3);
+            color: #F9FAFB;
+        }
+
+        &[readonly] {
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+    }
+
+    // Autocompletado del navegador: evitar el fondo claro.
+    input:-webkit-autofill {
+        -webkit-text-fill-color: #F9FAFB;
+        -webkit-box-shadow: 0 0 0 1000px #19163F inset;
+        caret-color: #F9FAFB;
+    }
+
+    .btn-primary {
+        background-color: $bler-violet;
+        border-color: $bler-violet;
+        color: #FFFFFF;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $bler-amethyst;
+            border-color: $bler-amethyst;
+            color: #FFFFFF;
+        }
+    }
+
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: $bler-line;
+        color: $bler-text;
+    }
+
+    // Selector de usuarios ("Elegir un usuario")
+    .list-group-item {
+        background-color: rgba(255, 255, 255, 0.04);
+        border-color: $bler-line;
+        color: $bler-text;
+
+        &:hover,
+        &:focus {
+            background-color: rgba(139, 92, 246, 0.18);
+            color: #FFFFFF;
+        }
+    }
+
+    .alert-danger {
+        background-color: rgba(220, 38, 38, 0.15);
+        border-color: rgba(248, 113, 113, 0.4);
+        color: #FECACA;
+    }
+
+    .alert-success,
+    .alert-info {
+        background-color: rgba(34, 211, 238, 0.12);
+        border-color: rgba(34, 211, 238, 0.35);
+        color: #CFFAFE;
+    }
+}

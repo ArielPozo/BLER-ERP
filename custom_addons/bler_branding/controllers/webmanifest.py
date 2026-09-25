@@ -4,7 +4,7 @@ from odoo.http import request
 from odoo.addons.web.controllers.webmanifest import WebManifest
 
 BRAND_NAME = "BLER ERP"
-BRAND_COLOR = "#1F3A5F"
+BRAND_COLOR = "#1E1B4B"
 
 
 class BlerWebManifest(WebManifest):
@@ -18,7 +18,7 @@ class BlerWebManifest(WebManifest):
         manifest["background_color"] = BRAND_COLOR
         manifest["theme_color"] = BRAND_COLOR
         manifest["icons"] = [{
-            "src": "/bler_branding/static/src/img/bler_icon_placeholder_%s.png" % size,
+            "src": "/bler_branding/static/src/img/bler_icon_%s.png" % size,
             "sizes": "%sx%s" % (size, size),
             "type": "image/png",
         } for size in (192, 512)]

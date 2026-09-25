@@ -1,0 +1,70 @@
+// MuK reparte el espacio entre sus hijos (space-between); con la tarjeta como
+// tercer hijo quedaría un hueco entre ella y el menú. Tarjeta y menú arriba,
+// imagen del pie abajo.
+.mk_apps_sidebar_panel .mk_apps_sidebar {
+    justify-content: flex-start;
+
+    .mk_apps_sidebar_logo {
+        margin-top: auto;
+    }
+}
+
+// Tarjeta del logo de la compañía en la barra lateral de MuK. Fondo claro en
+// ambos modos: el logo de la compañía suele estar hecho para fondo claro.
+.mk_apps_sidebar_panel .o_bler_company_card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 8px 4px;
+    padding: 8px;
+    min-height: 48px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    // Opción "Tarjeta del logo transparente" de la compañía.
+    &.o_bler_company_card_transparent {
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+    .o_bler_company_logo {
+        max-width: 100%;
+        max-height: 44px;
+        object-fit: contain;
+    }
+
+    .o_bler_company_icon {
+        display: none;
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+    }
+}
+
+// Barra angosta (tipo "pequeño", o "grande" en pantallas medianas): solo el ícono.
+@mixin bler-company-card-small {
+    .o_bler_company_card {
+        margin: 6px 4px 4px;
+        padding: 4px;
+        min-height: 0;
+
+        .o_bler_company_logo {
+            display: none;
+        }
+
+        .o_bler_company_icon {
+            display: block;
+        }
+    }
+}
+
+.mk_sidebar_type_small {
+    @include bler-company-card-small;
+}
+
+@include media-breakpoint-only(md) {
+    .mk_sidebar_type_large {
+        @include bler-company-card-small;
+    }
+}
