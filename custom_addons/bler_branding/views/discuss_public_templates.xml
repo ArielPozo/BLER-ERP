@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Página pública de Conversaciones (enlaces de invitación a canales/reuniones):
+         tiene su propio <head>, así que se le aplica el mismo título y favicon. -->
+    <template id="discuss_public_channel_template" inherit_id="mail.discuss_public_channel_template" name="BLER ERP: título y favicon de Conversaciones públicas">
+        <xpath expr="//head/title" position="attributes">
+            <attribute name="t-esc">title or 'BLER ERP'</attribute>
+        </xpath>
+        <xpath expr="//head/link[@rel='shortcut icon']" position="attributes">
+            <attribute name="t-att-href">x_icon or '/bler_branding/static/src/img/favicon_placeholder.ico'</attribute>
+        </xpath>
+    </template>
+
+</odoo>

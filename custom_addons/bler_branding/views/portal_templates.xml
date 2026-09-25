@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Barra lateral de los documentos del portal: quitar "Powered by Odoo" -->
+    <template id="portal_record_sidebar" inherit_id="portal.portal_record_sidebar" name="BLER ERP: barra lateral del portal">
+        <xpath expr="//div[a[contains(@href, 'utm_medium=portal')]]" position="replace"/>
+    </template>
+
+</odoo>
