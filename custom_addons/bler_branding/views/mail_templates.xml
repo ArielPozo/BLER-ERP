@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Pie "Powered by Odoo" de los correos generados por plantillas QWeb.
+         Los correos guardados como mail.template (invitación al portal,
+         contraseña, cuenta creada) se limpian en el post_init_hook. -->
+
+    <!-- Notificaciones de mensajes (chatter, documentos enviados por correo).
+         Se conserva el enlace para dejar de seguir. -->
+    <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout" name="BLER ERP: pie de notificaciones">
+        <xpath expr="//div[@t-if='show_footer'][.//a[contains(@href, 'www.odoo.com')]]" position="replace">
+            <div t-if="show_footer" style="color: #555555; font-size:11px;">
+                <span id="mail_unfollow">
+                    <a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a>
+                </span>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="mail_notification_light" inherit_id="mail.mail_notification_light" name="BLER ERP: pie de notificaciones simples">
+        <xpath expr="//a[contains(@href, 'www.odoo.com')]/.." position="replace">
+            <td align="center" style="min-width: 590px;">
+                <span id="mail_unfollow">
+                    <a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a>
+                </span>
+            </td>
+        </xpath>
+    </template>
+
+    <!-- Restablecer contraseña y alerta de inicio de sesión desde otro dispositivo -->
+    <template id="reset_password_email" inherit_id="auth_signup.reset_password_email" name="BLER ERP: pie de restablecer contraseña">
+        <xpath expr="//a[contains(@href, 'www.odoo.com')]/ancestor::tr[2]" position="replace"/>
+    </template>
+
+    <template id="alert_login_new_device" inherit_id="auth_signup.alert_login_new_device" name="BLER ERP: pie de alerta de nuevo dispositivo">
+        <xpath expr="//a[contains(@href, 'www.odoo.com')]/ancestor::tr[2]" position="replace"/>
+    </template>
+
+    <!-- Resumen periódico (digest) -->
+    <template id="digest_mail_main" inherit_id="digest.digest_mail_main" name="BLER ERP: pie del resumen">
+        <xpath expr="//p[@id='powered']" position="replace"/>
+        <!-- "Sent by Odoo – Unsubscribe": se conserva el enlace para darse de baja -->
+        <xpath expr="//div[hasclass('by_odoo')]/a[contains(@href, 'www.odoo.com')]" position="replace">
+            <span>BLER ERP</span>
+        </xpath>
+    </template>
+
+</odoo>

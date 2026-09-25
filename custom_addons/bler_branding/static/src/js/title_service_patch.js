@@ -2,8 +2,7 @@
 
 import { titleService } from "@web/core/browser/title_service";
 import { patch } from "@web/core/utils/patch";
-
-export const BRAND_NAME = "BLER ERP";
+import { BRAND_NAME } from "./brand";
 
 /**
  * El servicio de título del núcleo usa "Odoo" cuando no hay ninguna parte de
