@@ -1,0 +1,40 @@
+# Demo de BLER ERP para probar en una PC con Windows (ver LEEME_DEMO.md).
+# Independiente del entorno de desarrollo (odoo_stack/): otro proyecto de
+# Compose (bler_demo), otros volúmenes y la base bler_demo con datos ficticios.
+name: bler_demo
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB: postgres
+    volumes:
+      - demo_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "odoo"]
+      interval: 5s
+      retries: 20
+
+  odoo:
+    build:
+      context: ../odoo_stack
+      dockerfile: Dockerfile
+    image: bler_erp_demo:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # Solo esta PC (127.0.0.1): la demo no queda abierta a la red.
+      - "127.0.0.1:8069:8069"
+    volumes:
+      - demo_data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../odoo_ec_addons:/mnt/extra-addons:ro
+      - ../custom_addons:/mnt/custom-addons:ro
+    command: odoo -c /etc/odoo/odoo.conf
+
+volumes:
+  demo_db:
+  demo_data:

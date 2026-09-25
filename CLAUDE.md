@@ -12,6 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `custom_addons/taller_ec_flota/` | Our module: links `fleet.vehicle` to `repair.order`, menu restrictions | Yes |
 | `custom_addons/bler_branding/` | Our module: BLER ERP brand in the UI (tab title, favicon/PWA icons, login and portal footer, user menu without odoo.com links). Logo/icons in `static/src/img/` are exported from `brand/` | Yes |
 | `custom_addons/bler_taller/` | Our module: workshop features from `lista_necesarios.txt` (service lines on repairs, services/parts catalog, calendar, OWL dashboard, work-order and vehicle PDFs, customer↔vehicle, portal `/my/vehiculos`, maintenance reminder cron). Depends on `taller_ec_flota` | Yes |
+| `demo/` | Windows demo for prospective clients: `iniciar_demo.bat` / `detener_demo.bat` / `reiniciar_demo.bat`, its own Compose project `bler_demo` (DB `bler_demo`, bound to `127.0.0.1:8069`), `setup_company.py` (Ecuador/USD before Accounting so `l10n_ec` loads) and `seed_demo.py` (fictitious data). See `demo/LEEME_DEMO.md`. The `.bat` files must stay CRLF (`.gitattributes`) | Yes |
 | `brand/` | Logo sources (SVG), PNG exports, palette and brand notes (`brand/README.md`) | Yes |
 | `custom_addons/muk_web_*`, `web_dark_mode`, `web_responsive` | Third-party UI addons vendored from `muk-it/odoo-modules` and `OCA/web` (branch 18.0). Don't edit; re-copy from upstream to update | No |
 | `odoo_ec_addons/` | Vendored copy of `somatechlat/odoo_saas_ecuador` (commit in `VENDORED.md`): Ecuador SRI localization (`l10n_ec_*`) | No (vendored) |
